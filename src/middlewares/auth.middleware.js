@@ -3,8 +3,9 @@ require("dotenv").config();
 
 const authMiddleware = (req, res, next) => {
   let { authorization: token } = req.headers;
-  token = token.replace("Bearer ", "");
+  token = token?.replace("Bearer ", "");
   console.log(token);
+  if(token) {
   jwt.verify(
     token,
     process.env.JWT_SECRET,
@@ -21,6 +22,12 @@ const authMiddleware = (req, res, next) => {
       }
     }
   );
+} else {
+  res.status(400).json({
+    error: "no token provided",
+    message: "No se está enviando token de autenticación"
+  })
+}
 };
 
 module.exports = authMiddleware;
